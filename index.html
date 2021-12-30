@@ -13,33 +13,26 @@
         }
     </style>
     <div>
-    <canvas id="canvas"></canvas>
-    <br>
+    
     <textarea id="text" onchange="textupdate(this)" placeholder="Text"></textarea>
     <br>
-    <input type="number" id="textsize" onchange="textsizeupdate(this)" placeholdder="Text size" value=34></input>
+    <input type="number" id="textsize" onchange="textsizeupdate(this)" placeholdder="Text size" value=76></input>
     <br>
-    <input type="file" id="imagefile" onchange="imageupdate(this)"></input>
+    <canvas id="canvas"></canvas>
     <br>
-    <input id="imageurl" onchange="imageurlupdate(this)" placeholder="Image address"></input>
-    </div>
-    <div>
-        <canvas width="390" height="240" id="canvas2" style="border: 1px solid black; margin-top: 20px;"></canvas>
-        <div class="color-bar"></div>
-        <button class="clear-button">clear</button>
-        <button class="apply-button">apply</button>
-    </div>
+    
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/7.1.0/rxjs.umd.min.js"></script>
-    <script src="paint.js"></script>
+    
     <script>
         var canvas = document.getElementById('canvas')
         ctx = canvas.getContext('2d');
-        canvas.width = 128;
+        canvas.width = 850;
         canvas.crossOrigin = "Anonymous";
-        canvas.height = 128;
-        strDataURI = './blob_base.png'
+        canvas.height = 1321;
+        strDataURI = './maldae.png'
         var img = new window.Image();
-        var maxtextsize = 34
+        var maxtextsize = 82
         var textsize = maxtextsize
         var text = ""
         img.addEventListener("load", function () {
@@ -53,12 +46,8 @@
 
         async function draw(fn) {
             ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.save();
-            ctx.font = textsize + "pt Verdana";
-            ctx.rotate(0.195);
-            ctx.fillStyle = 'rgba(256,256,256,1)';
-            ctx.fillRect(0, 28, 130, 80)
+            ctx.font = textsize + "pt 굴림체";
             ctx.fillStyle = "black";
             ctx.textAlign = "center";
             await fn(ctx);
@@ -75,8 +64,8 @@
                     heights.push(textHeight)
                     ascents.push(ctx.measureText(text).actualBoundingBoxAscent * 1.1)
                 });
-                const topMargin = (65 - (textHeight) / 2);
-                text.split("\n").forEach((text, currentLine) => { ctx.fillText(text, 60, topMargin + heights[currentLine] + ascents[currentLine]); ++currentLine; });
+                const topMargin = (200 - (textHeight) / 2);
+                text.split("\n").forEach((text, currentLine) => { ctx.fillText(text, 425, topMargin + heights[currentLine] + ascents[currentLine]); ++currentLine; });
             });
         }
 
@@ -116,15 +105,13 @@
             drawDataURIOnCanvas(canvas)
         }
         async function textupdate(e) {
-            text = e.value
+            text = e.value + "···"
             textInput = document.getElementById('textsize')
             ctx = canvas.getContext('2d')
             width = Math.max( ... text.split("\n").map( textline => ctx.measureText(textline).width ) )
-            textsize = Math.min(Math.ceil(600 / width), maxtextsize)
-            textInput.value = textsize
-
+            await drawDataURIOnCanvas(canvas)
             await drawTextOnCanvas(text, canvas)
-            drawDataURIOnCanvas(canvas)
+            
         }
 
         async function imageupdate(e) {
